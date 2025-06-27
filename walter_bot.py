@@ -1,5 +1,7 @@
 
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,18 +9,32 @@ from selenium.webdriver.support.ui import Select
 import time
 
 # User-provided content to humanize
-content_to_humanize = """YOUR_CONTENT_HERE"""
+content_to_humanize = """This is a sample text that needs to be humanized. It is being used to test the Walter Writes AI bot. The purpose of this test is to ensure the bot can log in, navigate, input text, select options, and retrieve the processed output, while also attempting to bypass potential Cloudflare protections."""
 
 # Login details
 email = "aaaliyanzmoreau255@gmail.com"
 password = "Create1#"
 
-# Initialize the WebDriver (e.g., Chrome)
-# Make sure you have chromedriver.exe in your PATH or specify its location
-driver = webdriver.Chrome()
-driver.maximize_window()
+# Initialize WebDriver using standard Selenium for diagnostic purposes
+options = ChromeOptions()
+options.binary_location = "/usr/bin/chromium-browser"  # Path to the snap wrapper
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--disable-gpu')
+options.add_argument('--window-size=1920x1080')
 
+chromedriver_path = "/usr/bin/chromedriver"  # Path to the very old system chromedriver
+service = Service(executable_path=chromedriver_path, service_args=['--verbose', '--log-path=./chromedriver_std.log'])
+
+print(f"Attempting to start standard Selenium WebDriver with:")
+print(f"  Browser Binary: {options.binary_location}")
+print(f"  ChromeDriver: {chromedriver_path}")
+
+driver = None
 try:
+    driver = webdriver.Chrome(service=service, options=options)
+    print("Standard Selenium WebDriver initialized successfully.")
     # 1. Navigate to the login page
     driver.get("https://app.walterwrites.ai/en/login?callbackUrl=https%3A%2F%2Fapp.walterwrites.ai")
 
